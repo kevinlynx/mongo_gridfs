@@ -170,7 +170,7 @@ get_attribute(State, Attribute) ->
 	ReadMode = Parameters#gridfs_connection.read_mode,
 	Conn = Parameters#gridfs_connection.connection,
 	Database = Parameters#gridfs_connection.database,
-	{ok, {{Attribute, Value}}} = mongo:do(WriteMode, ReadMode, Conn, Database,
+	{{Attribute, Value}} = mongo:do(WriteMode, ReadMode, Conn, Database,
 										  fun() ->
 												  mongo:find_one(Coll, {'_id', State#state.id}, {'_id', 0, Attribute, 1})
 										  end),
@@ -187,7 +187,7 @@ read(State, ChunkNum, Offset, NumToRead, NumberOfChunks, Result) ->
 	ReadMode = Parameters#gridfs_connection.read_mode,
 	Conn = Parameters#gridfs_connection.connection,
 	Database = Parameters#gridfs_connection.database,
-	{ok, {{data,{bin, bin, BinData}}}} = mongo:do(WriteMode, ReadMode, Conn, Database,
+	{{data,{bin, bin, BinData}}} = mongo:do(WriteMode, ReadMode, Conn, Database,
 												  fun() ->
 														  mongo:find_one(Coll, {'files_id', State#state.id, n, ChunkNum}, {'_id', 0, data, 1})
 												  end),

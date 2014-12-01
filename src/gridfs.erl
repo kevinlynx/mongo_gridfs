@@ -148,7 +148,7 @@ insert(Bucket, FileName, FileData) when not is_tuple(FileName) ->
 insert(Bucket, Bson, FileData) when is_binary(FileData) ->
 	FilesColl = list_to_atom(atom_to_list(Bucket) ++ ".files"),
 	ChunksColl = list_to_atom(atom_to_list(Bucket) ++ ".chunks"),
-	ObjectId = mongodb_app:gen_objectid(),
+    {ObjectId} =  mongo_id_server:object_id(), 
 	insert(ChunksColl, ObjectId, 0, FileData),
 	Md5 = list_to_binary(bin_to_hexstr(crypto:md5(FileData))),
     ListBson=tuple_to_list(Bson),
@@ -158,7 +158,7 @@ insert(Bucket, Bson, FileData) when is_binary(FileData) ->
 insert(Bucket, Bson, IoStream) ->
 	FilesColl = list_to_atom(atom_to_list(Bucket) ++ ".files"),
 	ChunksColl = list_to_atom(atom_to_list(Bucket) ++ ".chunks"),
-	ObjectId = mongodb_app:gen_objectid(),
+    {ObjectId} =  mongo_id_server:object_id(), 
 	{Md5, FileSize} = copy(ChunksColl, ObjectId, 0, IoStream, crypto:md5_init(), 0),
 	Md5Str = list_to_binary(bin_to_hexstr(Md5)),
 	file:close(IoStream),
