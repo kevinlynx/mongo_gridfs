@@ -107,9 +107,12 @@ find_one(Selector) ->
 -spec(find_one(atom(), bson:document()) -> file()).
 find_one(Bucket, Selector) ->
 	FilesColl = list_to_atom(atom_to_list(Bucket) ++ ".files"),
-	{{'_id', Id}} = mongo:find_one(FilesColl, Selector, {'_id', 1}),
-	ConnectionParameters = get(gridfs_state),
-	gridfs_file:new(ConnectionParameters, Bucket, Id, self()).
+    case mongo:find_one(FilesColl, Selector, {'_id', 1}) of
+        {} -> none;
+	    {{'_id', Id}} -> 
+	        ConnectionParameters = get(gridfs_state),
+	        gridfs_file:new(ConnectionParameters, Bucket, Id, self())
+    end.
 
 %@doc Finds files matching the selector from the fs.files and fs.chunks collections
 %     and returns a cursor.
